@@ -1,12 +1,5 @@
 $(document).ready(function()
 {
-    console.log("Ready.")
-    // check for stored document and restore
-    if (localStorage.getItem("userdocument")) {
-        console.log('Page reloaded... restoring document.')
-        restoreDocumentList($('ul#userdocument'));
-    }
-
     function parseId( id ) {
         // takes full string id and returns parsed integer id after '_'
         return parseInt(id.split('_')[1])
@@ -106,17 +99,4 @@ $(document).ready(function()
         $('#questionfield').val(jsonIds);
     }
 
-    function saveLocalDocument() {
-        // update list of questions in sessionStorage if there is a change
-        // first get the children of document ui
-        var html = $('#userdocument').html();
-        console.log(html);
-        localStorage.setItem("questionhtml", html)
-    }
-
-    function restoreDocumentList($documentlist) {
-        // gets list of questions from local storage
-        // restores visible list in #documentList
-        // var localStorage.getItem("questionhtml");
-    }
 });
