@@ -10,6 +10,7 @@ from flask_login import LoginManager
 # flask-sqlalchemy
 # flask-migrate
 # flask-login
+# flask-wtf
 
 app = Flask(__name__)
 Bootstrap(app)
