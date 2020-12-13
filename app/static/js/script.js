@@ -4,7 +4,8 @@ $(document).ready(function()
         // takes full string id and returns parsed integer id after '_'
         return parseInt(id.split('_')[1])
     }
-    // set all questions clickable
+
+    // Display image when li is clicked on
     $(".question").click(function()
     {
         // remove all active classes when clicked
@@ -33,6 +34,11 @@ $(document).ready(function()
         helper: 'clone',
         cursor: 'pointer'
     });
+
+    // Allow user selected questions to be sortable (drag to change order)
+    $( function() {
+        $('ul#userdocument').sortable();
+    })
 
     $('ul#userdocument').droppable( {
         // question can be dropped into document
@@ -86,6 +92,7 @@ $(document).ready(function()
             // restore draggable property of original question
             $(`#question_${qid}`).draggable('enable');
         })
+        getQuestionIds($document);
     }
 
     function getQuestionIds($question_ul) {
@@ -94,9 +101,6 @@ $(document).ready(function()
         // store question ids in session storage
         jsonIds = JSON.stringify(ids);
         console.log(jsonIds);
-        localStorage.setItem("userdocument", jsonIds);
-        // set hidden field in save form to value of questionlist
-        $('#questionfield').val(jsonIds);
     }
 
 });
