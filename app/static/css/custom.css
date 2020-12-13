@@ -1,0 +1,52 @@
+.qpanelbody {
+  overflow-y: scroll;
+  padding: 0px;
+}
+
+.fill-height {
+  height: 100vh;
+}
+
+.questionlist {
+  height: calc(50vh - 140px);
+}
+
+.questionviewer {
+  height: calc(100vh - 175px);
+  overflow-y: scroll;
+}
+
+.list-group-item.active {
+  background-color: lightgrey !important;
+  border-color: lightgrey;
+}
+
+.list-group-item.disabled {
+  color: lightgrey;
+  background-color: whitesmoke;
+}
+
+#question-img {
+  width: 100%;
+  height: auto;
+}
+
+.p {
+  display: inline-block;
+}
+
+.question {
+  cursor: pointer;
+}
+
+a:hover{
+  color: red;
+}
+
+#saveButton {
+  color: white;
+}
+
+.modal {
+  display: 
+}

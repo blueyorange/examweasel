@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+<!-----------NAVBAR----------------------->
+<div class="container-fluid fill-height">
+  <nav class="navbar navbar-default">
+      <a class="navbar-brand" href="#">ExamWeasel</a>
+  </nav>
+  {% endblock %}
+
+  {% block app_content %}
+  <div class="row">
+    <!------------LEFT COLUMN--------------------->
+    <div class="col-sm-4">
+      <!-----------QUESTION PANEL----------------->
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          {{ questions|length }} Questions
+        </div>
+        <div class="panel-body qpanelbody">
+          <ul class="list-group questionlist">
+            {% for question in questions %}
+              <li class="list-group-item question" id="question_{{ question.id }}">
+                {{ question.id }}, {{ question.sitting }}, {{ question.paper}}, {{ question.question_type }}
+                {{ question.type }}
+                {% if question.description %}
+                  {{ question.description }}
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <!-----------DOCUMENT PANEL----------------->
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          Document
+          <a href="#saveWindow" data-toggle="modal" data-target="#saveWindow">
+            <span class="glyphicon glyphicon-new-window"></span>
+          </a>
+        </div>
+        <div class="panel-body qpanelbody">
+          <ul class="list-group questionlist" id="documentlist">
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-8">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          Question Viewer
+        </div>
+        <!-----------QUESTION VIEW PANEL----------------->
+        <div class="panel-body questionviewer" id="questionview">
+          Select question to view
+        </div>
+      </div>
+    </div>
+  <!---Modal--->
+  <div class="modal fade" id="saveWindow" role="dialog">
+    <div class="modal-dialog">
+      <!--Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times</button>
+          <h4 class="modal-title">Save or download document</h4>
+        </div>
+        <div class="modal-body">
+          <!---save form-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,2 @@
+FLASK_APP=questiondb.py
+FLASK_ENV=development
