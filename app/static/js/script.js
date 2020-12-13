@@ -96,11 +96,8 @@ $(document).ready(function()
     }
 
     function getQuestionIds($question_ul) {
-        ids = $question_ul.sortable("")
+        ids = $question_ul.sortable("serialize")
         console.log('Doc ids: ',ids);
-        // store question ids in session storage
-        jsonIds = JSON.stringify(ids);
-        console.log(jsonIds);
     }
 
 });
