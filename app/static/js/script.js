@@ -39,7 +39,7 @@ $(document).ready(function()
     $( function() {
         $('ul#userdocument').sortable({
             update: function( event, ui ) {
-                console.log("Sortable updated.")
+                saveDocument($this);
             }
         });
     })
@@ -96,12 +96,16 @@ $(document).ready(function()
             // restore draggable property of original question
             $(`#question_${qid}`).draggable('enable');
         })
-        getQuestionIds($document);
+        saveDocument($document);
     }
 
-    function getQuestionIds($question_ul) {
-        ids = $question_ul.sortable("serialize")
-        console.log('Doc ids: ',ids);
-    }
+    function saveDocument($question_ul) {
+        console.log("Updating server...");
+        $.ajax({
+            type: 'POST',
+            url: `${$SCRIPT_ROOT}save_document`,
+            data: $question_ul.sortable("toArray")
+        });
+    };
 
 });

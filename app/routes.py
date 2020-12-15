@@ -53,3 +53,7 @@ def add_question():
     q = Question.query.get(question_id).__dict__
     del q['_sa_instance_state']
     return jsonify(q)
+
+@app.route('/save_document')
+def save_document():
+    document_ids = request.args.get('document',2,type=int)
