@@ -37,7 +37,11 @@ $(document).ready(function()
 
     // Allow user selected questions to be sortable (drag to change order)
     $( function() {
-        $('ul#userdocument').sortable();
+        $('ul#userdocument').sortable({
+            update: function( event, ui ) {
+                console.log("Sortable updated.")
+            }
+        });
     })
 
     $('ul#userdocument').droppable( {
