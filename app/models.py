@@ -53,7 +53,7 @@ class Image(db.Model):
 # questions are organised into files created by the user (question papers)
 class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    question_list = db.Column(db.String(120))
+    question_list = db.Column(db.PickleType)
     filename = db.Column(db.String(120))
     author = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True,default=datetime.utcnow)
