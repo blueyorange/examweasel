@@ -97,10 +97,12 @@ $(document).ready(function()
     $('#saveForm').on('submit', function(e) {
         e.preventDefault();
         // get question ids
-        var ids = $('ul#userdocument').sortable("serialize");
-        console.log(ids)
+        var ids = $('ul#userdocument').sortable("toArray").map(parseId);
+        var id_string = JSON.stringify(ids);
+        console.log(id_string)
         // append question ids to form data for submission
-        data = $('#saveForm').serialize() + '&' + ids
+        // data = $('#saveForm').serialize() + '&ids=[' + ids + ']';
+        data = $('#saveForm').serialize() + '&ids=' + id_string;
         console.log(data);
         $.post('/index', data, function() {
             $('#saveWindow').modal('hide');

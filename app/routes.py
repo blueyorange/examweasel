@@ -36,7 +36,8 @@ def index():
     form = SaveForm()
     if request.method == 'POST':
         print('POSTed')
-        print(request.form.to_dict())
+        ids = request.form.get('ids').strip('][').split(',')
+        print(ids,type(ids))
         flash("File saved successfully.")
     return render_template('index.html', questions=questions, saveForm=form, filename=filename)
 
