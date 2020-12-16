@@ -31,11 +31,14 @@ def logout():
 @app.route('/')
 @app.route('/index', methods=['GET','POST'])
 def index():
+    filename = 'untitled'
     questions = Question.query.all()
-    save_form = SaveForm()
-    if save_form.validate_on_submit():
-        pass
-    return render_template('index.html', questions=questions, saveForm=save_form)
+    form = SaveForm()
+    if request.method == 'POST':
+        print('POSTed')
+        print(request.form.to_dict())
+        flash("File saved successfully.")
+    return render_template('index.html', questions=questions, saveForm=form, filename=filename)
 
 @app.route('/get_image')
 def get_image():
@@ -46,14 +49,3 @@ def get_image():
     print(str(url),type(url))
     return jsonify(url)
 
-@app.route('/add_question')
-def add_question():
-    question_id = request.args.get('question_id',1,type=int)
-    print(question_id)
-    q = Question.query.get(question_id).__dict__
-    del q['_sa_instance_state']
-    return jsonify(q)
-
-@app.route('/save_document')
-def save_document():
-    document_ids = request.args.get('document',2,type=int)

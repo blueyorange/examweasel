@@ -11,5 +11,4 @@ class LoginForm(FlaskForm):
 class SaveForm(FlaskForm):
     filename = StringField('Filename', validators=[DataRequired()])
     saveSubmit = SubmitField('Save')
-    questionfield = HiddenField()
 

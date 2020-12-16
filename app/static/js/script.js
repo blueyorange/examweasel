@@ -36,13 +36,9 @@ $(document).ready(function()
     });
 
     // Allow user selected questions to be sortable (drag to change order)
-    $( function() {
         $('ul#userdocument').sortable({
-            update: function( event, ui ) {
-                saveDocument($this);
             }
-        });
-    })
+        );
 
     $('ul#userdocument').droppable( {
         // question can be dropped into document
@@ -96,16 +92,18 @@ $(document).ready(function()
             // restore draggable property of original question
             $(`#question_${qid}`).draggable('enable');
         })
-        saveDocument($document);
     }
 
-    function saveDocument($question_ul) {
-        console.log("Updating server...");
-        $.ajax({
-            type: 'POST',
-            url: `${$SCRIPT_ROOT}save_document`,
-            data: $question_ul.sortable("toArray")
+    $('#saveForm').on('submit', function(e) {
+        e.preventDefault();
+        // get question ids
+        var ids = $('ul#userdocument').sortable("serialize");
+        console.log(ids)
+        // append question ids to form data for submission
+        data = $('#saveForm').serialize() + '&' + ids
+        console.log(data);
+        $.post('/index', data, function() {
+            $('#saveWindow').modal('hide');
         });
-    };
-
+    })
 });
