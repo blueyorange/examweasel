@@ -18,7 +18,7 @@ def login():
         next_page = request.args.get('next')
         if next_page is None or next_page.startswith('/'):
             next_page = url_for('index')
-        return redirect(url_for(next_page))
+        return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 
 # redirect user to login page upon logout
@@ -37,10 +37,12 @@ def index():
     if request.method == 'POST':
         print('POSTed')
         ids = request.form.get('ids').strip('][').split(',')
-        print(ids,type(ids))
+        ids = [int(id) for id in ids]
+        print(current_user.id)
         filename = request.form.get('filename')
         flash("File saved successfully.")
-        file = File(author=current_user._get_current_object(), question_list=ids, filename=filename)
+        file = File(author=current_user._get_current_object(),filename=filename)
+        print(file.question_list)
         db.session.add(file)
         db.session.commit()
     return render_template('index.html', questions=questions, saveForm=form, filename=filename)
