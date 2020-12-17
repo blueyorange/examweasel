@@ -1,8 +1,8 @@
 from flask import render_template, request, redirect, url_for, flash, jsonify
-from app import app
+from app import app, db
 from app.forms import LoginForm, SaveForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, Question, Image
+from app.models import User, Question, Image, File
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -16,9 +16,9 @@ def login():
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
-        if next_page is None or not next.startswith('/'):
+        if next_page is None or next_page.startswith('/'):
             next_page = url_for('index')
-        return redirect(url_for('next_page'))
+        return redirect(url_for(next_page))
     return render_template('login.html', title='Sign In', form=form)
 
 # redirect user to login page upon logout
@@ -38,7 +38,11 @@ def index():
         print('POSTed')
         ids = request.form.get('ids').strip('][').split(',')
         print(ids,type(ids))
+        filename = request.form.get('filename')
         flash("File saved successfully.")
+        file = File(author=current_user._get_current_object(), question_list=ids, filename=filename)
+        db.session.add(file)
+        db.session.commit()
     return render_template('index.html', questions=questions, saveForm=form, filename=filename)
 
 @app.route('/get_image')
