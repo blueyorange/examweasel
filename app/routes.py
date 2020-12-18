@@ -45,7 +45,9 @@ def index():
         print(file.question_list)
         db.session.add(file)
         db.session.commit()
-        return(filename)
+        data = {'filename':filename, 'file_id':file.id}
+        print(data)
+        return(jsonify(data))
     return render_template('index.html', questions=questions, saveForm=form, filename=filename)
 
 @app.route('/get_image')
