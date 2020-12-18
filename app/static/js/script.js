@@ -104,8 +104,10 @@ $(document).ready(function()
         // data = $('#saveForm').serialize() + '&ids=[' + ids + ']';
         data = $('#saveForm').serialize() + '&ids=' + id_string;
         console.log(data);
-        $.post('/index', data, function() {
+        $.post('/index', data, function(filename) {
             $('#saveWindow').modal('hide');
+            console.log(filename);
+            $('span#filename').html(filename);
         });
     })
 });

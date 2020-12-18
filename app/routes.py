@@ -41,10 +41,11 @@ def index():
         print(current_user.id)
         filename = request.form.get('filename')
         flash("File saved successfully.")
-        file = File(author=current_user._get_current_object(),filename=filename)
+        file = File(author=current_user.id,filename=filename,question_list=ids)
         print(file.question_list)
         db.session.add(file)
         db.session.commit()
+        return(filename)
     return render_template('index.html', questions=questions, saveForm=form, filename=filename)
 
 @app.route('/get_image')

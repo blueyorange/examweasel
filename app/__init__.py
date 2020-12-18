@@ -16,7 +16,8 @@ app = Flask(__name__)
 Bootstrap(app)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+# check for change in column type when migrating by setting compare_type to True
+migrate = Migrate(app, db, compare_type=True)
 login = LoginManager(app)
 # setup login manager to redirect anonymous users to login page
 login.login_view = 'login'
