@@ -63,6 +63,6 @@ class File(db.Model):
     timestamp = db.Column(db.DateTime, index=True,default=datetime.utcnow)
 
     def __repr__(self):
-        return '<File {}>'.format(self.filename)
+        return '<File {}>'.format(self.filename, self.question_list)
 
 

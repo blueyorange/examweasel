@@ -95,19 +95,25 @@ $(document).ready(function()
     }
 
     $('#saveForm').on('submit', function(e) {
+        // prevent form from sending by default method
         e.preventDefault();
         // get question ids
         var ids = $('ul#userdocument').sortable("toArray").map(parseId);
         var id_string = JSON.stringify(ids);
-        console.log(id_string)
+        console.log(id_string);
+        // retrieve current file id from browser
+        var file_id = localStorage.getItem('current_file_id')
+        console.log('Retrieved file id: '+file_id);
         // append question ids to form data for submission
         // data = $('#saveForm').serialize() + '&ids=[' + ids + ']';
-        data = $('#saveForm').serialize() + '&ids=' + id_string;
+        data = $('#saveForm').serialize() + '&ids=' + id_string + '&file_id=' + file_id; 
         console.log(data);
         $.post('/index', data, function(data) {
-            $('#saveWindow').modal('hide');
             console.log(data);
             $('span#filename').html(data['filename']);
+            // store file ID in local storage so that further saves write to the same 
+            // database entry
+            localStorage.setItem('current_file_id',data['file_id']);
         });
     })
 });
