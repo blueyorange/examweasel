@@ -5,4 +5,5 @@
         "pylint_flask_sqlalchemy",
         "pylint_flask",                 # This package is optional
     ]
+    "sqlite.logLevel": "DEBUG"
 }
