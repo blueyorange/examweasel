@@ -3,42 +3,93 @@
 
 {% block navbar %}
 <!-----------NAVBAR----------------------->
-<!---Modal--->
-<div class="modal" id="saveWindow" role="dialog">
-  <div class="modal-dialog">
-    <!--Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times</button>
-        <h4 class="modal-title">Save or download document</h4>
-      </div>
-      <div class="modal-body">
-        <!------FLASHED MESSAGES----------------------->
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-info" role="alert">
-              {{ message }}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            {% endfor %}
-        {% endif %}
-        {% endwith %}
-        <!---save form-->
-        {{ wtf.quick_form(saveForm, id='saveForm') }}
-      </div>
-    </div>
-  </div>
-</div>
-<div class="container-fluid fill-height">
   <nav class="navbar navbar-default">
       <a class="navbar-brand" href="#">ExamWeasel</a>
   </nav>
-  {% endblock %}
+</div>
+{% endblock %}
 
-  {% block app_content %}
+{% block app_content %}
+  <!---SAVE WINDOW--->
+  <div class="modal" id="saveWindow" role="dialog">
+    <div class="modal-dialog">
+      <!--Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times</button>
+          <h4 class="modal-title">Save or download document</h4>
+        </div>
+        <div class="modal-body">
+          <!------FLASHED MESSAGES----------------------->
+          {% with messages = get_flashed_messages() %}
+          {% if messages %}
+              {% for message in messages %}
+              <div class="alert alert-info" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              {% endfor %}
+          {% endif %}
+          {% endwith %}
+          <!---save form-->
+          {{ wtf.quick_form(saveForm, id='saveForm') }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!---LOAD WINDOW--->
+  <div class="modal" id="loadWindow" role="dialog">
+    <div class="modal-dialog">
+      <!--Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times</button>
+          <h4 class="modal-title">Documents</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Open</th>
+                <th>Title</th>
+                <th>Saved</th>
+                <th>Author</th>
+                <th>Questions</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for document in documents %}
+              <tr>
+                <td>
+                  <span class="glyphicon glyphicon-open-file"></span>
+                </td>
+                <td>
+                  {{ document.filename }}
+                </td>
+                <td>
+                  {{ document.timestamp }}
+                </td>
+                <td>
+                  {{ document.author.username }}
+                </td>
+                <td>
+                  {{ document.question_list|length }}
+                </td>
+                <td>
+                  <span class="glyphicon glyphicon-trash"></span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid fill-height">
   <div class="row">
     <!------------LEFT COLUMN--------------------->
     <div class="col-sm-4">
@@ -67,6 +118,9 @@
           <span id="filename">{{ filename }}</span>
           <a href="#saveWindow"  id="saveButton" data-toggle="modal" data-target="#saveWindow">
             <span class="glyphicon glyphicon-new-window"></span>
+          </a>
+          <a href="#saveWindow"  id="saveButton" data-toggle="modal" data-target="#loadWindow">
+            <span class="glyphicon glyphicon-th-list"></span>
           </a>
         </div>
         <div class="panel-body qpanelbody">

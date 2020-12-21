@@ -63,7 +63,9 @@ def index():
         db.session.commit()
         data = {'filename':filename, 'file_id':file.id}
         return(jsonify(data))
-    return render_template('index.html', questions=questions, saveForm=form, filename=filename)
+    # query files for document loader
+    documents = File.query.all()
+    return render_template('index.html', questions=questions, saveForm=form, filename=filename, documents=documents)
 
 @app.route('/get_image')
 def get_image():
