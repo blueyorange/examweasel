@@ -5,6 +5,13 @@
 <!-----------NAVBAR----------------------->
   <nav class="navbar navbar-default">
       <a class="navbar-brand" href="#">ExamWeasel</a>
+      <ul class = "nav navbar-nav">
+        <li>
+          <a href="#loadWindow"  id="loadButton" data-toggle="modal" data-target="#loadWindow">
+            <span class="glyphicon glyphicon-th-list"></span>
+          </a>
+        </li>
+      </ul>
   </nav>
 </div>
 {% endblock %}
@@ -70,7 +77,7 @@
                   {{ document.filename }}
                 </td>
                 <td>
-                  {{ document.timestamp }}
+                  {{ document.timestamp.strftime('%d-%m-%Y, %H:%M') }}
                 </td>
                 <td>
                   {{ document.author.username }}
@@ -118,9 +125,6 @@
           <span id="filename">{{ filename }}</span>
           <a href="#saveWindow"  id="saveButton" data-toggle="modal" data-target="#saveWindow">
             <span class="glyphicon glyphicon-new-window"></span>
-          </a>
-          <a href="#saveWindow"  id="saveButton" data-toggle="modal" data-target="#loadWindow">
-            <span class="glyphicon glyphicon-th-list"></span>
           </a>
         </div>
         <div class="panel-body qpanelbody">

@@ -1,3 +1,4 @@
+Found image: .DS_Store
 Found image: 0625_s13_qp_11_Question_16.png
 query: None
 Image not found. Adding to table.Question not found. Adding to table.Found image: 0625_s13_qp_11_Question_17.png

@@ -51,7 +51,7 @@ class Image(db.Model):
     path = db.Column(db.String, unique=True)
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
     # is it a question or a mark scheme
-    q_ms = db.Column(db.String)
+    resource_type = db.Column(db.String)
     def __repr__(self):
         return '<Image {}>'.format(self.path)
 
@@ -60,10 +60,8 @@ class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question_list = db.Column(db.PickleType())
     filename = db.Column(db.String(120))
-    author = db.Column(db.Integer, db.ForeignKey('user.id'))
-    timestamp = db.Column(db.DateTime, index=True,default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     def __repr__(self):
         return '<File {} {}>'.format(self.filename, self.question_list)
-
-

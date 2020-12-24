@@ -52,11 +52,11 @@ def index():
         if file_id == 'null':
             print('No file: creating new entry')
             # No file id sent: create new database entry
-            file = File(author=current_user.id,filename=filename,question_list=ids)
+            file = File(author=current_user,filename=filename,question_list=ids)
         else:
             # file id submitted: query for file entry and update
             file = File.query.filter_by(id=file_id).first()
-            file.author=current_user.id
+            file.author=current_user
             file.question_list = ids
             file.filename = filename
         db.session.add(file)

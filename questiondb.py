@@ -42,7 +42,7 @@ def sync_questions():
                                 paper=d['paper'], question_number=d['q_no'],question_type=q_type)
                             db.session.add(q)
                         # now that question is def in table, add child image and commit
-                        im = Image(path=path,q_ms=d['q_ms'],question=q)
+                        im = Image(path=path,resource_type=d['q_ms'],question=q)
                         db.session.add(im)
                         db.session.commit()
                     else:
