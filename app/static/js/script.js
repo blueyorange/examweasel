@@ -25,7 +25,7 @@ $(document).ready(function()
                     // display image of new question using returned url
                     console.log(url);
                     $('#questionview').html(`<img src="${url}" id="question-img"></img"`);
-                })
+            })
         }
     });
 
@@ -115,5 +115,14 @@ $(document).ready(function()
             // database entry
             localStorage.setItem('current_file_id',data['file_id']);
         });
+    })
+
+    $('#loadButton').click(function() {
+        // load button clicked: get list of files available from server
+        $.get(`${$SCRIPT_ROOT}get_file_list`, (html, status) => {
+            // fill in table with html for table body containing files list from database
+            console.log(status)
+            $('#load_table_body').html(html);
+        })
     })
 });

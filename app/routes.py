@@ -76,3 +76,7 @@ def get_image():
     print(str(url),type(url))
     return jsonify(url)
 
+@app.route('/get_file_list')
+def get_file_list():
+    documents = File.query.all()
+    return render_template('load_table.html', documents=documents)

@@ -1,0 +1,22 @@
+{% for document in documents %}
+<tr id ="file_{{ document.id }}" >
+  <td>
+    <span class="glyphicon glyphicon-open-file"></span>
+  </td>
+  <td>
+    {{ document.filename }}
+  </td>
+  <td>
+    {{ document.timestamp.strftime('%d-%m-%Y, %H:%M') }}
+  </td>
+  <td>
+    {{ document.author.username }}
+  </td>
+  <td>
+    {{ document.question_list|length }}
+  </td>
+  <td>
+    <span class="glyphicon glyphicon-trash"></span>
+  </td>
+</tr>
+{% endfor %}

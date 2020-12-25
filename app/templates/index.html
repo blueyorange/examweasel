@@ -67,29 +67,7 @@
                 <th>Delete</th>
               </tr>
             </thead>
-            <tbody>
-              {% for document in documents %}
-              <tr>
-                <td>
-                  <span class="glyphicon glyphicon-open-file"></span>
-                </td>
-                <td>
-                  {{ document.filename }}
-                </td>
-                <td>
-                  {{ document.timestamp.strftime('%d-%m-%Y, %H:%M') }}
-                </td>
-                <td>
-                  {{ document.author.username }}
-                </td>
-                <td>
-                  {{ document.question_list|length }}
-                </td>
-                <td>
-                  <span class="glyphicon glyphicon-trash"></span>
-                </td>
-              </tr>
-              {% endfor %}
+            <tbody id="load_table_body">
             </tbody>
           </table>
         </div>
