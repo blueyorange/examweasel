@@ -6,6 +6,7 @@ from app.models import User, Question, Image, File
 
 @app.route('/login', methods=['GET','POST'])
 def login():
+    '''Returns login form and authenticates user.'''
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = LoginForm()
@@ -24,6 +25,7 @@ def login():
 # redirect user to login page upon logout
 @app.route('/logout')
 def logout():
+    '''Logs user out (duh)!'''
     logout_user()
     return redirect(url_for('login'))
 
@@ -32,6 +34,7 @@ def logout():
 @app.route('/index', methods=['GET','POST'])
 @login_required
 def index():
+    '''Returns the main app page and saves files'''
     filename = 'untitled'
     questions = Question.query.all()
     form = SaveForm()
@@ -62,11 +65,12 @@ def index():
         db.session.add(file)
         db.session.commit()
         data = {'filename':filename, 'file_id':file.id}
-        return(jsonify(data))
+        return jsonify(data)
     return render_template('index.html', questions=questions, saveForm=form, filename=filename)
 
 @app.route('/get_image')
 def get_image():
+    '''Takes an integer question id from the client and returns a url for the image.'''
     question_id = request.args.get('question_id',1,type=int)
     q = Question.query.get(question_id)
     print(q)
@@ -76,11 +80,13 @@ def get_image():
 
 @app.route('/get_file_list')
 def get_file_list():
+    '''Returns html for the table body of the load window - a file list.'''
     files = File.query.all()
     return render_template('load_table.html', files=files)
 
 @app.route('/load_file')
 def load_file():
+    '''Takes an integer representing a file id and returns the filename and the list of questions.'''
     file_id = request.args.get('id',1,type=int)
     f = File.query.filter_by(id=file_id).first()
     print("Request for file " + str(f))
