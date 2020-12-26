@@ -63,9 +63,7 @@ def index():
         db.session.commit()
         data = {'filename':filename, 'file_id':file.id}
         return(jsonify(data))
-    # query files for document loader
-    documents = File.query.all()
-    return render_template('index.html', questions=questions, saveForm=form, filename=filename, documents=documents)
+    return render_template('index.html', questions=questions, saveForm=form, filename=filename)
 
 @app.route('/get_image')
 def get_image():
@@ -78,5 +76,12 @@ def get_image():
 
 @app.route('/get_file_list')
 def get_file_list():
-    documents = File.query.all()
-    return render_template('load_table.html', documents=documents)
+    files = File.query.all()
+    return render_template('load_table.html', files=files)
+
+@app.route('/load_file')
+def load_file():
+    file_id = request.args.get('id',1,type=int)
+    f = File.query.filter_by(id=file_id).first()
+    print("Request for file " + str(f))
+    return jsonify(filename=f.filename, question_list=f.question_list)

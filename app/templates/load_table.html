@@ -1,19 +1,19 @@
-{% for document in documents %}
-<tr id ="file_{{ document.id }}" >
+{% for file in files %}
+<tr>
   <td>
-    <span class="glyphicon glyphicon-open-file"></span>
+    <span class="glyphicon glyphicon-open-file" id ="file_{{ file.id }}"></span>
   </td>
   <td>
-    {{ document.filename }}
+    {{ file.filename }}
   </td>
   <td>
-    {{ document.timestamp.strftime('%d-%m-%Y, %H:%M') }}
+    {{ file.timestamp.strftime('%d-%m-%Y, %H:%M') }}
   </td>
   <td>
-    {{ document.author.username }}
+    {{ file.author.username }}
   </td>
   <td>
-    {{ document.question_list|length }}
+    {{ file.question_list|length }}
   </td>
   <td>
     <span class="glyphicon glyphicon-trash"></span>

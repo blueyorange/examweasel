@@ -22,9 +22,9 @@ $(document).ready(function()
                 // send question id
                 question_id: qid
             }, (url) => {
-                    // display image of new question using returned url
-                    console.log(url);
-                    $('#questionview').html(`<img src="${url}" id="question-img"></img"`);
+                // display image of new question using returned url
+                console.log(url);
+                $('#questionview').html(`<img src="${url}" id="question-img"></img"`);
             })
         }
     });
@@ -117,12 +117,49 @@ $(document).ready(function()
         });
     })
 
-    $('#loadButton').click(function() {
+    $('#loadButton').click(function(event) {
+        event.preventDefault();
         // load button clicked: get list of files available from server
-        $.get(`${$SCRIPT_ROOT}get_file_list`, (html, status) => {
-            // fill in table with html for table body containing files list from database
-            console.log(status)
-            $('#load_table_body').html(html);
+        $.ajax({
+            url: `${$SCRIPT_ROOT}get_file_list`,
+            type: 'GET',
+            success: function(data) {
+                // fill in table with html for table body containing files list from database
+                $('#load_table_body').html(data);
+                // make file icons clickable and load file if clicked
+                $("[id^='file'").click(function(event) {
+                    var file_id = event.target.id.split('_')[1]
+                    console.log("Loading file " + file_id);
+                    load_file_from_server(file_id);
+                });
+                // show modal load window
+                $('#loadWindow').modal('show');
+            },
+            error: function(data) {
+                console.log("Server error.")
+                alert("Server error!");
+            }
         })
     })
+
+    function load_file_from_server(id) {
+        // get filename and question_list from server
+        $.getJSON(`${$SCRIPT_ROOT}load_file`, {
+            id: id
+        }, function(file) {
+            // show modal load window
+            $('#loadWindow').modal('hide');
+            console.log("File received "+file.filename)
+            // update visible filename in document window
+            $('#filename').html(file.filename)
+            // update question list
+            var questions = file.question_list;
+            console.log(`Adding questions to document list: ${questions}`);
+            questions.forEach( (id) => {
+                id = "#question_" + id;
+                $element = $(id);
+                addQuestionToList($element,$('ul#userdocument'))
+            })
+        });
+    }
 });
