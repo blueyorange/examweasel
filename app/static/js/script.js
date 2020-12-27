@@ -1,9 +1,7 @@
 $(document).ready(function()
 {
-    function parseId( id ) {
-        // takes full string id and returns parsed integer id after '_'
-        return parseInt(id.split('_')[1])
-    }
+    // any changes to file this is set to true
+    var file_changed = false;
 
     // Display image when li is clicked on
     $(".question").click(function()
@@ -49,6 +47,8 @@ $(document).ready(function()
             if ($question.hasClass('copy')) {
                 return;
             }
+            // File has been changed
+            file_changed = true;
             // get droppable object <ul>
             console.log('question dropped');
             // add question to document (this droppable)
@@ -91,12 +91,24 @@ $(document).ready(function()
             $(`#question_${qid}`).removeClass('disabled')
             // restore draggable property of original question
             $(`#question_${qid}`).draggable('enable');
+            // File has been changed
+            file_changed = true;
         })
+    }
+
+    // This is used by addQuestionToList and saveform functions to get numerical ids
+    function parseId( id ) {
+        // takes full string id and returns parsed integer id after '_'
+        return parseInt(id.split('_')[1])
     }
 
     $('#saveForm').on('submit', function(e) {
         // prevent form from sending by default method
         e.preventDefault();
+        save_file_to_server();
+    })
+
+    function save_file_to_server() {
         // get question ids
         var ids = $('ul#userdocument').sortable("toArray").map(parseId);
         var id_string = JSON.stringify(ids);
@@ -114,9 +126,12 @@ $(document).ready(function()
             // store file ID in local storage so that further saves write to the same 
             // database entry
             localStorage.setItem('current_file_id',data['file_id']);
+            // File has been saved
+            file_changed = false;
         });
-    })
+    }
 
+    // ****************LOAD BUTTON CLICKED**************************************
     $('#loadButton').click(function(event) {
         event.preventDefault();
         // load button clicked: get list of files available from server
@@ -131,6 +146,20 @@ $(document).ready(function()
                     var file_id = event.target.id.split('_')[1]
                     console.log("Loading file " + file_id);
                     load_file_from_server(file_id);
+                    // Check if current file has been changed
+                    if (file_changed) {
+                        // show 'save changes?' dialog
+                        $('#savecurrentfiledialog').modal('show');
+                        $('#savefile').click( save_file_to_server() );
+                        $('#discardchanges').click( (event) => {
+                            // Discard changes: hide this dialog
+                            $('#savecurrentfiledialog').modal('hide');
+                        });
+                        $('#cancelload').click( (event) => {
+                            $('#savecurrentfiledialog').modal('hide');
+                            $('#loadwindow').modal('hide');
+                        });
+                    };
                 });
                 // show modal load window
                 $('#loadWindow').modal('show');
@@ -142,8 +171,9 @@ $(document).ready(function()
         })
     })
 
+    // ***************************LOAD FILE FROM SERVER**************************
     function load_file_from_server(id) {
-        // get filename and question_list from server
+        // get filename and question_list from server with AJAX
         $.getJSON(`${$SCRIPT_ROOT}load_file`, {
             id: id
         }, function(file) {
@@ -162,4 +192,7 @@ $(document).ready(function()
             })
         });
     }
+
+    // **********************SAVE CURRENT FILE DIALOG****************************
+
 });
