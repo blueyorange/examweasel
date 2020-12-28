@@ -83,24 +83,30 @@ $(document).ready(function()
         const trashHTML = '<a href="#" class="trash"><span class="glyphicon glyphicon-trash"></span></a>';
         $question_copy.append(trashHTML)
         // set trash icon to remove item from list
-        $('.trash').click(function() {
-            console.log('question removed')
-            // destroy cloned question element
-            $(this).parent().remove();
-            // remove disabled class from original question element
-            $(`#question_${qid}`).removeClass('disabled')
-            // restore draggable property of original question
-            $(`#question_${qid}`).draggable('enable');
-            // File has been changed
-            file_changed = true;
+        $('.trash').click( (event) => {
+            var qid=parseId(event.currentTarget.parentElement.id);
+            removeQuestion(qid);
         })
     }
 
+    // Remove question from list
+    function removeQuestion(qid) {
+        console.log(`question ${qid} removed`)
+        // destroy cloned question element
+        $(`#document_${qid}`).remove();
+        // remove disabled class from original question element
+        $(`#question_${qid}`).removeClass('disabled');
+        // restore draggable property of original question
+        $(`#question_${qid}`).draggable('enable');
+        // File has been changed
+        file_changed = true;
+    }
     // This is used by addQuestionToList and saveform functions to get numerical ids
     function parseId( id ) {
         // takes full string id and returns parsed integer id after '_'
         return parseInt(id.split('_')[1])
     }
+
 
     $('#saveForm').on('submit', function(e) {
         // prevent form from sending by default method
@@ -110,7 +116,7 @@ $(document).ready(function()
 
     function save_file_to_server() {
         // get question ids
-        var ids = $('ul#userdocument').sortable("toArray").map(parseId);
+        ids = getQuestionIDs();
         var id_string = JSON.stringify(ids);
         console.log(id_string);
         // retrieve current file id from browser
@@ -131,6 +137,10 @@ $(document).ready(function()
         });
     }
 
+    function getQuestionIDs() {
+        return $('ul#userdocument').sortable("toArray").map(parseId);
+    }
+
     // ****************LOAD BUTTON CLICKED**************************************
     $('#loadButton').click(function(event) {
         event.preventDefault();
@@ -148,17 +158,7 @@ $(document).ready(function()
                     load_file_from_server(file_id);
                     // Check if current file has been changed
                     if (file_changed) {
-                        // show 'save changes?' dialog
-                        $('#savecurrentfiledialog').modal('show');
-                        $('#savefile').click( save_file_to_server() );
-                        $('#discardchanges').click( (event) => {
-                            // Discard changes: hide this dialog
-                            $('#savecurrentfiledialog').modal('hide');
-                        });
-                        $('#cancelload').click( (event) => {
-                            $('#savecurrentfiledialog').modal('hide');
-                            $('#loadwindow').modal('hide');
-                        });
+                        saveChanges();
                     };
                 });
                 // show modal load window
@@ -177,11 +177,13 @@ $(document).ready(function()
         $.getJSON(`${$SCRIPT_ROOT}load_file`, {
             id: id
         }, function(file) {
-            // show modal load window
+            // hide modal load window
             $('#loadWindow').modal('hide');
             console.log("File received "+file.filename)
             // update visible filename in document window
-            $('#filename').html(file.filename)
+            $('span#filename').text(file.filename)
+            // remove all question elements from list
+            getQuestionIDs().forEach( (item) => removeQuestion(item) )
             // update question list
             var questions = file.question_list;
             console.log(`Adding questions to document list: ${questions}`);
@@ -193,6 +195,18 @@ $(document).ready(function()
         });
     }
 
-    // **********************SAVE CURRENT FILE DIALOG****************************
-
+    // **********************SAVE CHANGES DIALOG****************************
+    function saveChanges() {
+        // show 'save changes?' dialog
+        $('#savecurrentfiledialog').modal('show');
+        $('#savefile').click( save_file_to_server() );
+        $('#discardchanges').click( (event) => {
+            // Discard changes: hide this dialog
+            $('#savecurrentfiledialog').modal('hide');
+        });
+        $('#cancelload').click( (event) => {
+            $('#savecurrentfiledialog').modal('hide');
+            $('#loadwindow').modal('hide');
+        });
+    }
 });
