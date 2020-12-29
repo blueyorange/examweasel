@@ -3,6 +3,21 @@ $(document).ready(function()
     // any changes to file this is set to true
     var file_changed = false;
 
+    // check for file in localstorage
+    check_local_storage();
+
+    // new file button
+    $('a#newFileButton').click( (e) => {
+        e.preventDefault();
+        console.log("New file button clicked")
+        if (file_changed) {
+            saveChanges();
+        } else {
+            localStorage.removeItem('current_file_id');
+            $('span#filename').text('untitled');
+            clear_question_list();
+        }
+    })
     // Display image when li is clicked on
     $(".question").click(function()
     {
@@ -101,12 +116,6 @@ $(document).ready(function()
         // File has been changed
         file_changed = true;
     }
-    // This is used by addQuestionToList and saveform functions to get numerical ids
-    function parseId( id ) {
-        // takes full string id and returns parsed integer id after '_'
-        return parseInt(id.split('_')[1])
-    }
-
 
     $('#saveForm').on('submit', function(e) {
         // prevent form from sending by default method
@@ -135,10 +144,6 @@ $(document).ready(function()
             // File has been saved
             file_changed = false;
         });
-    }
-
-    function getQuestionIDs() {
-        return $('ul#userdocument').sortable("toArray").map(parseId);
     }
 
     // ****************LOAD BUTTON CLICKED**************************************
@@ -182,8 +187,8 @@ $(document).ready(function()
             console.log("File received "+file.filename)
             // update visible filename in document window
             $('span#filename').text(file.filename)
-            // remove all question elements from list
-            getQuestionIDs().forEach( (item) => removeQuestion(item) )
+            // clear list of questions
+            clear_question_list();
             // update question list
             var questions = file.question_list;
             console.log(`Adding questions to document list: ${questions}`);
@@ -192,6 +197,8 @@ $(document).ready(function()
                 $element = $(id);
                 addQuestionToList($element,$('ul#userdocument'))
             })
+            // store file id locally
+            localStorage.setItem('current_file_id',id);
         });
     }
 
@@ -210,3 +217,28 @@ $(document).ready(function()
         });
     }
 });
+
+function check_local_storage() {
+    file_id = localStorage.getItem('current_file_id');
+    if (file_id) {
+        load_file_from_server();
+    }
+    else {
+        console.log("No file stored locally.")
+    }
+}
+
+function clear_question_list() {
+    // remove all question elements from list
+    getQuestionIDs().forEach( (item) => removeQuestion(item) )
+}
+
+function getQuestionIDs() {
+    // retrieves list of integers representing questions in document
+    return $('ul#userdocument').sortable("toArray").map(parseId);
+}
+
+function parseId( id ) {
+    // takes full string id and returns parsed integer id after '_'
+    return parseInt(id.split('_')[1])
+}

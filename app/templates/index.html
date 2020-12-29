@@ -11,6 +11,11 @@
             <span class="glyphicon glyphicon-th-list"></span>
           </a>
         </li>
+        <li>
+          <a href="#" id="newFileButton">
+            <span class="glyphicon glyphicon-plus"></span>
+          </a>
+        </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-out"></a></li>
@@ -57,13 +62,13 @@
           Save changes?
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn" id="savefile">
+          <button type="button" class="btn btn-default" id="savefile">
             Save
           </button>
           <button type="button" class="btn btn-danger" id="discardchanges">
             Discard
           </button>
-          <button type="button" class="btn" id="cancelload">
+          <button type="button" class="btn btn-default" id="cancelload">
             Cancel
           </button>
         </div>
