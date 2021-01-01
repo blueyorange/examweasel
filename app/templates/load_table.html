@@ -1,7 +1,7 @@
 {% for file in files %}
 <tr>
   <td>
-    <span class="glyphicon glyphicon-open-file" id ="file_{{ file.id }}"></span>
+    <a href="#"><span class="glyphicon glyphicon-open-file" id ="file_{{ file.id }}"></span></a>
   </td>
   <td>
     {{ file.filename }}
@@ -16,7 +16,9 @@
     {{ file.question_list|length }}
   </td>
   <td>
-    <span class="glyphicon glyphicon-trash"></span>
+    <a href="#">
+      <span class="glyphicon glyphicon-trash"></span>
+    </a>
   </td>
 </tr>
 {% endfor %}

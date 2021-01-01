@@ -35,19 +35,12 @@
           <h4 class="modal-title">Save or download document</h4>
         </div>
         <div class="modal-body">
-          <!------FLASHED MESSAGES----------------------->
-          {% with messages = get_flashed_messages() %}
-          {% if messages %}
-              {% for message in messages %}
-              <div class="alert alert-info" role="alert">
-                {{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              {% endfor %}
-          {% endif %}
-          {% endwith %}
+          <!------MESSAGES----------------------->
+          <div class="alert alert-success" role="alert">
+          </div>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           <!---save form-->
           {{ wtf.quick_form(saveForm, id='saveForm') }}
         </div>
