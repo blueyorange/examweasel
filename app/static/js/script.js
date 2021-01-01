@@ -1,30 +1,94 @@
 $(document).ready(function()
 {
+    
+    // ************** FILE CLASS ********************************************
+    class File {
+        constructor($list,$filename) {
+            this.name="untitled";
+            this.question_list=[];
+            this.changed=false;
+            this.id = null;
+            this.$list = $list;
+            this.$filename = $filename;
+            $filename.text = this.name;
+        }
+
+        update() {
+            this.question_list = this.$list.sortable("toArray").map(parseId);
+        }
+
+        saveLocally() {
+            this.update()
+            localStorage.setItem('current_file_id',this.id);
+        }
+
+        saveToServer() {
+            // update question_list to reflect sortable list
+            this.update();
+            // serialise question list
+            var id_string = JSON.stringify(this.question_list);
+            // append question ids to form data for submission
+            data = $('#saveForm').serialize() + '&ids=' + id_string + '&file_id=' + this.id;
+            console.log(data);
+            $.post('/index', data, function(data) {
+                console.log(data);
+                $('span#filename').html(data['filename']);
+                this.id = data['file_id'];
+                // File has been saved
+                this.file_changed = false;
+            });
+        };
+
+        loadFromServer(id) {
+            // get filename and question_list from server with AJAX
+            $.getJSON(`${$SCRIPT_ROOT}load_file`, {
+                id: id
+            }, function(file) {
+                // hide modal load window
+                $('#loadWindow').modal('hide');
+                console.log("File received "+file.filename)
+                // update visible filename in document window
+                $('span#filename').text(file.filename)
+                // clear list of questions
+                clear_question_list();
+                // update question list
+                var questions = file.question_list;
+                console.log(`Adding questions to document list: ${questions}`);
+                questions.forEach( (qid) => {
+                    id = "#question_" + qid;
+                    $element = $(qid);
+                    addQuestionToList($element,$('ul#userdocument'))
+                })
+                // store file id locally
+                this.saveLocally();
+            });
+        }
+    }
+
     // any changes to file this is set to true
     var file_changed = false;
 
     // check for file in localstorage
     file_id = localStorage.getItem('current_file_id');
+    file = new File($('ul#userdocument'),$('span#filename'));
     if (file_id) {
-        file = new File();
-        file.loadFromServer(id);
+        console.log(`Retrieved file id ${file_id}`)
+        file.loadFromServer(file_id);
     }
     else {
         console.log("No file stored locally.")
-        file = new File($('ul#userdocument'),$('span#filename'));
     }
 
     // new file button
     $('a#newFileButton').click( (e) => {
         e.preventDefault();
         console.log("New file button clicked")
-        if (file_changed) {
+        if (file.changed) {
             // show save changes modal dialog if true
             $('#savecurrentfiledialog').modal('show');
         } else {
             localStorage.removeItem('current_file_id');
-            $('span#filename').text('untitled');
-            clear_question_list();
+            window.location.reload();
         }
     })
 
@@ -199,68 +263,5 @@ $(document).ready(function()
         })
     }
 
-    // ************** FILE CLASS ********************************************
-    class File {
-        constructor($list,$filename) {
-            this.name="untitled";
-            this.question_list=[];
-            this.changes_saved=false;
-            this.id = null;
-            this.$list = $list;
-            this.$filename = $filename;
-            $filename.text = this.name;
-        }
-
-        update() {
-            this.question_list = this.$list.sortable("toArray").map(parseId);
-        }
-
-        saveLocally() {
-            this.update()
-            localStorage.setItem('current_file_id',this.id);
-        }
-
-        saveToServer() {
-            // update question_list to reflect sortable list
-            this.update();
-            // serialise question list
-            var id_string = JSON.stringify(this.question_list);
-            // append question ids to form data for submission
-            data = $('#saveForm').serialize() + '&ids=' + id_string + '&file_id=' + this.id;
-            console.log(data);
-            $.post('/index', data, function(data) {
-                console.log(data);
-                $('span#filename').html(data['filename']);
-                this.id = data['file_id'];
-                // File has been saved
-                this.file_changed = false;
-            });
-        };
-
-        loadFromServer() {
-            // get filename and question_list from server with AJAX
-            $.getJSON(`${$SCRIPT_ROOT}load_file`, {
-                id: this.id
-            }, function(file) {
-                // hide modal load window
-                $('#loadWindow').modal('hide');
-                console.log("File received "+file.filename)
-                // update visible filename in document window
-                $('span#filename').text(file.filename)
-                // clear list of questions
-                clear_question_list();
-                // update question list
-                var questions = file.question_list;
-                console.log(`Adding questions to document list: ${questions}`);
-                questions.forEach( (id) => {
-                    id = "#question_" + id;
-                    $element = $(id);
-                    addQuestionToList($element,$('ul#userdocument'))
-                })
-                // store file id locally
-                localStorage.setItem('current_file_id',id);
-            });
-        }
-    }
 });
 
