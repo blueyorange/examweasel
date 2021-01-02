@@ -5,16 +5,15 @@ $(document).ready(function()
     class File {
         constructor($panel) {
             this.name="untitled";
-            this.question_list=[];
+            this.question_array=[];
             this.changed=false;
             this.id = null;
-            // clone panel template and display
-            this.$panel = $panel.clone(withDataAndEvents=true);
-            this.$panel.show();
+            this.$filename = $panel.find( $('span.filename') );
+            this.$list = $panel.find( $('ul.questionlist') )
         }
 
         update() {
-            this.question_list = this.$list.sortable("toArray").map(parseId);
+            this.question_array = this.$list.sortable("toArray").map(parseId);
         }
 
         saveLocally() {
@@ -26,10 +25,10 @@ $(document).ready(function()
             // update question_list to reflect sortable list
             this.update();
             // serialise question list
-            var id_string = JSON.stringify(this.question_list);
+            var id_string = JSON.stringify(this.question_array);
             // append question ids to form data for submission
             data = $('#saveForm').serialize() + '&ids=' + id_string + '&file_id=' + this.id;
-            console.log(data);
+            console.log(`Sending: {data}`);
             $.post('/index', data, function(data) {
                 console.log(data);
                 $('span#filename').html(data['filename']);
@@ -38,6 +37,39 @@ $(document).ready(function()
                 this.file_changed = false;
             });
         };
+
+        addQuestion($question) {
+            // adds question list item object to document list
+            // create copy of question so that original stays in list
+            // make sure copy is still clickable by setting 'withDataAndEvents' to true
+            var id = $question.attr('id');
+            console.log(`Adding question ${id} to list.`);
+            // get integer id of dropped draggable question
+            var qid = parseId( id );
+            // clone original question
+            var $question_copy = $question.clone(withDataAndEvents=true);
+            $question_copy.addClass('copy');
+            $question_copy.removeClass('active');
+            if ($question.draggable() ) {
+                // destroy draggable behaviour of original
+                $question.draggable('disable');
+            }
+            // 'gray out' original question
+            $question.addClass('disabled');
+            // set id for cloned element as document_#
+            var clone_id = ['document',qid].join('_')
+            $question_copy.attr('id',clone_id);
+            // add clone to document list
+            $document.append( $question_copy );
+            // add trash glyphicon to clone
+            const trashHTML = '<a href="#" class="trash"><span class="glyphicon glyphicon-trash"></span></a>';
+            $question_copy.append(trashHTML)
+            // set trash icon to remove item from list
+            $('.trash').click( (event) => {
+                var qid=parseId(event.currentTarget.parentElement.id);
+                removeQuestion(qid);
+            })
+        }   
 
         loadFromServer(id) {
             // get filename and question_list from server with AJAX
@@ -81,7 +113,8 @@ $(document).ready(function()
 
     // check for file in localstorage
     file_id = localStorage.getItem('current_file_id');
-    file = new File($('ul#userdocument'),$('span#filename'));
+    $panel = $('div#panel-template');
+    file = new File($panel);
     if (file_id) {
         console.log(`Retrieved file id ${file_id}`)
         file.loadFromServer(file_id);
@@ -168,7 +201,7 @@ $(document).ready(function()
             // get droppable object <ul>
             console.log('question dropped');
             // add question to document (this droppable)
-            addQuestionToList($question,$(this))
+            file.addQuestion($question);
         }
     });
 
@@ -233,36 +266,7 @@ $(document).ready(function()
     }
     
     function addQuestionToList($question, $document) {
-        // adds question list item object to document list
-        // create copy of question so that original stays in list
-        // make sure copy is still clickable by setting 'withDataAndEvents' to true
-        var id = $question.attr('id');
-        console.log(`Adding question ${id} to list.`);
-        // get integer id of dropped draggable question
-        var qid = parseId( id );
-        // clone original question
-        var $question_copy = $question.clone(withDataAndEvents=true);
-        $question_copy.addClass('copy');
-        $question_copy.removeClass('active');
-        if ($question.draggable() ) {
-            // destroy draggable behaviour of original
-            $question.draggable('disable');
-        }
-        // 'gray out' original question
-        $question.addClass('disabled');
-        // set id for cloned element as document_#
-        var clone_id = ['document',qid].join('_')
-        $question_copy.attr('id',clone_id);
-        // add clone to document list
-        $document.append( $question_copy );
-        // add trash glyphicon to clone
-        const trashHTML = '<a href="#" class="trash"><span class="glyphicon glyphicon-trash"></span></a>';
-        $question_copy.append(trashHTML)
-        // set trash icon to remove item from list
-        $('.trash').click( (event) => {
-            var qid=parseId(event.currentTarget.parentElement.id);
-            removeQuestion(qid);
-        })
+
     }
 
 });
