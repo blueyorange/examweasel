@@ -119,26 +119,31 @@
           </ul>
         </div>
       </div>
+    <div id="initial_position">
+      <!--------SPACE FOR INITIAL DOCUMENT PANEL-->
       <!-----------DOCUMENT PANEL----------------->
-      <div class="panel panel-primary">
+      <div id="panel-template" class="panel panel-primary" hidden>
         <div class="panel-heading">
-          <span id="filename">{{ filename }}</span>
-          <a href="#saveWindow"  id="saveButton" data-toggle="modal" data-target="#saveWindow">
+          <span class="filename">{{ filename }}</span>
+          <a href="#saveWindow"  class="saveButton" data-toggle="modal" data-target="#saveWindow">
             <span class="glyphicon glyphicon-new-window"></span>
           </a>
         </div>
         <div class="panel-body qpanelbody">
-          <ul class="list-group questionlist" id="userdocument">
+          <ul class="list-group questionlist">
+            <!---------SPACE FOR USER ADDED QUESTIONS-->
           </ul>
         </div>
       </div>
     </div>
+    </div>
+    <!-----------RIGHT COLUMN------------------------>
     <div class="col-sm-8">
+    <!-----------QUESTION VIEW PANEL----------------->
       <div class="panel panel-primary">
         <div class="panel-heading">
           Question Viewer
         </div>
-        <!-----------QUESTION VIEW PANEL----------------->
         <div class="panel-body questionviewer" id="questionview">
           Select question to view
         </div>
@@ -146,5 +151,6 @@
     </div>
   </div>
 </div>
+
 {% endblock %}
 

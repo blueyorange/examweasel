@@ -3,14 +3,14 @@ $(document).ready(function()
     
     // ************** FILE CLASS ********************************************
     class File {
-        constructor($list,$filename) {
+        constructor($panel) {
             this.name="untitled";
             this.question_list=[];
             this.changed=false;
             this.id = null;
-            this.$list = $list;
-            this.$filename = $filename;
-            $filename.text = this.name;
+            // clone panel template and display
+            this.$panel = $panel.clone(withDataAndEvents=true);
+            this.$panel.show();
         }
 
         update() {
@@ -63,10 +63,26 @@ $(document).ready(function()
                 this.saveLocally();
             });
         }
+
+        empty() {
+            this.update();
+            .forEach( (item) => removeQuestion(item) )
+        }
+
+        remove(id) {
+            // Remove question from list
+            console.log(`question ${qid} removed`)
+            // destroy cloned question element
+            $(`#document_${qid}`).remove();
+            // remove disabled class from original question element
+            $(`#question_${qid}`).removeClass('disabled');
+            // restore draggable property of original question
+            $(`#question_${qid}`).draggable('enable');
+            // File has been changed
+            file_changed = true;
+        }
     }
 
-    // any changes to file this is set to true
-    var file_changed = false;
 
     // check for file in localstorage
     file_id = localStorage.getItem('current_file_id');
@@ -218,16 +234,7 @@ $(document).ready(function()
     }
     
     function removeQuestion(qid) {
-        // Remove question from list
-        console.log(`question ${qid} removed`)
-        // destroy cloned question element
-        $(`#document_${qid}`).remove();
-        // remove disabled class from original question element
-        $(`#question_${qid}`).removeClass('disabled');
-        // restore draggable property of original question
-        $(`#question_${qid}`).draggable('enable');
-        // File has been changed
-        file_changed = true;
+
     }
     
     function addQuestionToList($question, $document) {
