@@ -64,12 +64,7 @@ $(document).ready(function()
             });
         }
 
-        empty() {
-            this.update();
-            .forEach( (item) => removeQuestion(item) )
-        }
-
-        remove(id) {
+        remove(qid) {
             // Remove question from list
             console.log(`question ${qid} removed`)
             // destroy cloned question element
