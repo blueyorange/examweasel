@@ -10,6 +10,24 @@ $(document).ready(function()
             this.id = null;
             this.$filename = $panel.find( $('span.filename') );
             this.$list = $panel.find( $('ul.questionlist') )
+            // make user list droppable
+            this.$list.droppable( {
+                // question can be dropped into document
+                drop: function( event, ui ) {
+                    // get dropped object
+                    var $question = $(ui.draggable);
+                    // do nothing if question is a copy already in document list
+                    if ($question.hasClass('copy')) {
+                        return;
+                    }
+                    // File has been changed
+                    this.file_changed = true;
+                    // get droppable object <ul>
+                    console.log('question dropped');
+                    // add question to document (this droppable)
+                    this.addQuestion($question);
+                }
+            });
         }
 
         update() {
@@ -31,7 +49,7 @@ $(document).ready(function()
             console.log(`Sending: {data}`);
             $.post('/index', data, function(data) {
                 console.log(data);
-                $('span#filename').html(data['filename']);
+                this.$filename.html(data['filename']);
                 this.id = data['file_id'];
                 // File has been saved
                 this.file_changed = false;
@@ -60,14 +78,14 @@ $(document).ready(function()
             var clone_id = ['document',qid].join('_')
             $question_copy.attr('id',clone_id);
             // add clone to document list
-            $document.append( $question_copy );
+            this.$list.append( $question_copy );
             // add trash glyphicon to clone
             const trashHTML = '<a href="#" class="trash"><span class="glyphicon glyphicon-trash"></span></a>';
             $question_copy.append(trashHTML)
             // set trash icon to remove item from list
             $('.trash').click( (event) => {
                 var qid=parseId(event.currentTarget.parentElement.id);
-                removeQuestion(qid);
+                this.remove(qid);
             })
         }   
 
@@ -84,12 +102,13 @@ $(document).ready(function()
                 // clear list of questions
                 clear_question_list();
                 // update question list
-                var questions = file.question_list;
+                this.question_array = file.question_list;
                 console.log(`Adding questions to document list: ${questions}`);
-                questions.forEach( (qid) => {
+                // Add each question from array into visible list as list items
+                this.question_array.forEach( (qid) => {
                     id = "#question_" + qid;
                     $element = $(qid);
-                    addQuestionToList($element,$('ul#userdocument'))
+                    this.addQuestion($element)
                 })
                 // store file id locally
                 this.saveLocally();
@@ -106,7 +125,8 @@ $(document).ready(function()
             // restore draggable property of original question
             $(`#question_${qid}`).draggable('enable');
             // File has been changed
-            file_changed = true;
+            this.update();
+            this.file_changed = true;
         }
     }
 
@@ -197,7 +217,7 @@ $(document).ready(function()
                 return;
             }
             // File has been changed
-            file_changed = true;
+            file.file_changed = true;
             // get droppable object <ul>
             console.log('question dropped');
             // add question to document (this droppable)
@@ -259,14 +279,6 @@ $(document).ready(function()
     function parseId( id ) {
         // takes full string id and returns parsed integer id after '_'
         return parseInt(id.split('_')[1])
-    }
-    
-    function removeQuestion(qid) {
-
-    }
-    
-    function addQuestionToList($question, $document) {
-
     }
 
 });
