@@ -11,7 +11,7 @@
   height: calc(50vh - 140px);
 }
 
-.questionviewer {
+#questionview {
   height: calc(100vh - 175px);
   overflow-y: scroll;
 }
