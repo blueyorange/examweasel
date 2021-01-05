@@ -199,7 +199,7 @@ $(document).ready(function()
             }, (url) => {
                 // display image of new question using returned url
                 console.log(url);
-                $('#questionview').html(`<img src="${url}" id="question-img"></img"`);
+                $('div#questionview').html(`<img src="${url}"></img>"`);
             })
         }
     });
@@ -210,7 +210,8 @@ $(document).ready(function()
         cursor: 'pointer'
     });
 
-
+    // ********************** TABS *************************************
+    $( "#tabs" ).tabs();
 
     $('ul#userdocument').droppable( {
         // question can be dropped into document
@@ -286,10 +287,6 @@ $(document).ready(function()
         })
     });
     
-    function getQuestionIDs() {
-        // retrieves list of integers representing questions in document
-        return $('ul#userdocument').sortable("toArray").map(parseId);
-    }
     
     function parseId( id ) {
         // takes full string id and returns parsed integer id after '_'
