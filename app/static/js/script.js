@@ -199,7 +199,7 @@ $(document).ready(function()
             }, (url) => {
                 // display image of new question using returned url
                 console.log(url);
-                $('#questionview').html(`<img src="${url}" id="question-img"></img"`);
+                $('#question-pane').html(`<img src="${url}" id="question-img"></img"`);
             })
         }
     });

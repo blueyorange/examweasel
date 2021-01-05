@@ -11,8 +11,8 @@
   height: calc(50vh - 140px);
 }
 
-.questionviewer {
-  height: calc(100vh - 175px);
+#questionviewer {
+  height: 100%;
   overflow-y: scroll;
 }
 
@@ -26,7 +26,7 @@
   background-color: whitesmoke;
 }
 
-#question-img {
+img {
   width: 100%;
   height: auto;
 }

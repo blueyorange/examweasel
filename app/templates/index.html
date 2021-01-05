@@ -146,8 +146,22 @@
         <div class="panel-heading">
           Question Viewer
         </div>
-        <div class="panel-body questionviewer" id="questionview">
-          Select question to view
+        <div class="panel-body">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#question-pane" data-toggle="tab">Question</a></li>
+            <li><a href="#ms-pane" data-toggle="tab">Mark Scheme</a></li>
+            <li><a href="#data-pane" data-toggle="tab">Data</a></li>
+          </ul>
+
+          <div class="tab-content">
+            <div id="question-pane" class="tab-pane in active">
+              Select question to view.
+            </div>
+            <div id="ms-pane" class="tab-pane">
+            </div>
+            <div id="data-pane" class="tab-pane">
+            </div>
+          </div>
         </div>
       </div>
     </div>
