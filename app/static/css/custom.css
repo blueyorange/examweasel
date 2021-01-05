@@ -43,10 +43,14 @@ a:hover{
   color: red;
 }
 
-#saveButton {
+.saveButton {
   color: white;
 }
 
-.modal {
-  display: 
+.menu-bar {
+  float: right;
+}
+
+.filename {
+  font-weight: bold;
 }

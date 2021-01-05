@@ -1,37 +1,40 @@
 $(document).ready(function()
 {
-    
     // ************** FILE CLASS ********************************************
     class File {
         constructor($panel) {
-            this.name="untitled";
+            this.name="New Document 1";
             this.question_array=[];
             this.changed=false;
             this.id = null;
             this.$filename = $panel.find( $('span.filename') );
-            this.$list = $panel.find( $('ul.questionlist') )
-            // make user list droppable
+            this.$filename.text(this.name);
+            this.$list = $panel.find( $('ul.questionlist') );
             this.$list.droppable( {
                 // question can be dropped into document
                 drop: function( event, ui ) {
                     // get dropped object
                     var $question = $(ui.draggable);
+                    console.log(`Question element: ${ ui.draggable }`);
                     // do nothing if question is a copy already in document list
                     if ($question.hasClass('copy')) {
                         return;
                     }
                     // File has been changed
-                    this.file_changed = true;
+                    file.file_changed = true;
                     // get droppable object <ul>
                     console.log('question dropped');
                     // add question to document (this droppable)
-                    this.addQuestion($question);
+                    file.addQuestion($question);
                 }
             });
+            // Allow user selected questions to be sortable (drag to change order)
+            this.$list.sortable({});
         }
 
         update() {
-            this.question_array = this.$list.sortable("toArray").map(parseId);
+            this.question_array = this.$list.sortable("toArray").map(parseId)
+            console.log(`List updated: ${this.question_array}`)
         }
 
         saveLocally() {
@@ -39,17 +42,17 @@ $(document).ready(function()
             localStorage.setItem('current_file_id',this.id);
         }
 
-        saveToServer() {
+        saveToServer(data) {
             // update question_list to reflect sortable list
             this.update();
             // serialise question list
             var id_string = JSON.stringify(this.question_array);
-            // append question ids to form data for submission
-            data = $('#saveForm').serialize() + '&ids=' + id_string + '&file_id=' + this.id;
-            console.log(`Sending: {data}`);
+            data = data + '&ids=' + this.question_array + '&file_id=' + this.id;
+            console.log(`Sending: ${data}`);
+            var $filename = this.$filename;
             $.post('/index', data, function(data) {
                 console.log(data);
-                this.$filename.html(data['filename']);
+                $filename.html(data['filename']);
                 this.id = data['file_id'];
                 // File has been saved
                 this.file_changed = false;
@@ -65,7 +68,7 @@ $(document).ready(function()
             // get integer id of dropped draggable question
             var qid = parseId( id );
             // clone original question
-            var $question_copy = $question.clone(withDataAndEvents=true);
+            var $question_copy = $question.clone(true);
             $question_copy.addClass('copy');
             $question_copy.removeClass('active');
             if ($question.draggable() ) {
@@ -91,27 +94,29 @@ $(document).ready(function()
 
         loadFromServer(id) {
             // get filename and question_list from server with AJAX
+            file = this;
+            console.log(file)
             $.getJSON(`${$SCRIPT_ROOT}load_file`, {
                 id: id
-            }, function(file) {
-                // hide modal load window
-                $('#loadWindow').modal('hide');
-                console.log("File received "+file.filename)
+            }, function(data) {
+
+                console.log("File received "+data.filename)
                 // update visible filename in document window
-                $('span#filename').text(file.filename)
+                file.name = data.filename;
+                file.$filename.text(data.filename)
                 // clear list of questions
-                clear_question_list();
+                file.clear();
                 // update question list
-                this.question_array = file.question_list;
-                console.log(`Adding questions to document list: ${questions}`);
+                file.question_array = data.question_list;
+                console.log(`Adding questions to document list: ${file.question_array}`);
                 // Add each question from array into visible list as list items
-                this.question_array.forEach( (qid) => {
+                file.question_array.forEach( (qid) => {
                     id = "#question_" + qid;
-                    $element = $(qid);
-                    this.addQuestion($element)
+                    var $element = $(id);
+                    file.addQuestion($element)
                 })
                 // store file id locally
-                this.saveLocally();
+                file.saveLocally();
             });
         }
 
@@ -128,8 +133,11 @@ $(document).ready(function()
             this.update();
             this.file_changed = true;
         }
-    }
 
+        clear() {
+            this.question_array.forEach( (item) => this.remove(item) )
+        }
+    }
 
     // check for file in localstorage
     file_id = localStorage.getItem('current_file_id');
@@ -202,10 +210,7 @@ $(document).ready(function()
         cursor: 'pointer'
     });
 
-    // Allow user selected questions to be sortable (drag to change order)
-        $('ul#userdocument').sortable({
-            }
-        );
+
 
     $('ul#userdocument').droppable( {
         // question can be dropped into document
@@ -225,18 +230,32 @@ $(document).ready(function()
         }
     });
 
-    //Save file form submitted
-    $('#saveForm').on('submit', function(e) {
-
-        // prevent form from sending by default method
+    // ***********************SAVE***********************************
+    $('a.saveButton').click( function(e) {
         e.preventDefault();
-        var ids = getQuestionIDs();
-        // retrieve current file id from browser
-        var file_id = localStorage.getItem('current_file_id')
-        save_file_to_server(ids, file_id);
-    })
+        console.log("Save button clicked.")
+        // check file not empty
+        file.update();
+        if ( !file.question_array.length ) {
+            console.log("Array empty.")
+            alert("Please add at least one question before saving or downloading.");
+        }
+        else {
+            $('div#saveWindow').modal('show');
+        }
+    });
 
-    // ****************LOAD BUTTON CLICKED**************************************
+    $('#saveForm').on('submit', function(e) {
+        // prevent form from sending by default method and save file
+        e.preventDefault();
+        // append question ids to form data for submission
+        file.filename = $('input#filename').val();
+        console.log(file.filename);
+        var data = $('#saveForm').serialize()
+        file.saveToServer(data);
+    });
+
+    // ****************LOAD*******************************************
     $('#loadButton').click( function(e) {
         e.preventDefault();
         // load button clicked: get list of files available from server
@@ -248,13 +267,12 @@ $(document).ready(function()
                 $('#load_table_body').html(data);
                 // make file icons clickable and load file if clicked
                 $("[id^='file'").click(function (event) {
+                    // get file id
                     var file_id = event.target.id.split('_')[1];
                     console.log("Loading file " + file_id);
-                    load_file_from_server(file_id);
-                    // Check if current file has been changed
-                    if (file_changed) {
-                        //saveChanges();
-                    };
+                    file.loadFromServer(file_id);
+                    // hide modal window when file is loaded
+                    $('#loadWindow').modal('hide');
                 });
                 // show modal load window
                 $('#loadWindow').modal('show');
@@ -262,14 +280,11 @@ $(document).ready(function()
             error: function(data) {
                 console.log("Server error.")
                 alert("Server error!");
+                // hide modal load window
+                $('#loadWindow').modal('hide');
             }
         })
     });
-
-    function clear_question_list() {
-        // remove all question elements from list
-        getQuestionIDs().forEach( (item) => removeQuestion(item) )
-    }
     
     function getQuestionIDs() {
         // retrieves list of integers representing questions in document
