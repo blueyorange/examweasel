@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from app import app, db
-from app.forms import LoginForm, SaveForm
+from app.forms import LoginForm, SaveForm, DataForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Question, Image, File
 
@@ -68,15 +68,14 @@ def index():
         return jsonify(data)
     return render_template('index.html', questions=questions, saveForm=form, filename=filename)
 
-@app.route('/get_image')
-def get_image():
-    '''Takes an integer question id from the client and returns a url for the image.'''
+@app.route('/get_viewer')
+def get_viewer():
+    '''Returns question viewer html when question is clicked.'''
     question_id = request.args.get('question_id',1,type=int)
     q = Question.query.get(question_id)
-    print(q)
-    url = str(q.images.first().path)
-    print(str(url),type(url))
-    return jsonify(url)
+    question_urls = [item.path for item in q.images.filter_by(resource_type='qp').all()]
+    ms_urls = [item.path for item in q.images.filter_by(resource_type='ms').all()]
+    return render_template('viewer.html', q=q,question_urls=question_urls,ms_urls=ms_urls, form=DataForm())
 
 @app.route('/get_file_list')
 def get_file_list():

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField, IntegerField, TextAreaField
 from wtforms.validators import DataRequired
 
 class LoginForm(FlaskForm):
@@ -12,3 +12,12 @@ class SaveForm(FlaskForm):
     filename = StringField('Filename', validators=[DataRequired()])
     saveSubmit = SubmitField('Save')
 
+class DataForm(FlaskForm):
+    exam_sitting = StringField('Exam Sitting')
+    paper = StringField('Exam Paper')
+    question_number = IntegerField('Question')
+    topic = StringField('Topic')
+    question_type = StringField('Type')
+    description = TextAreaField('Description')
+    answer = StringField('Answer')
+    submit = SubmitField('Save')
