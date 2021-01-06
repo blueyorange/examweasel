@@ -114,7 +114,7 @@ $(document).ready(function()
                     id = "#question_" + qid;
                     var $element = $(id);
                     file.addQuestion($element)
-                })
+                });
                 // store file id locally
                 file.saveLocally();
             });
@@ -187,21 +187,21 @@ $(document).ready(function()
         $(".question.active").removeClass("active");
         // activate question as selected if not already done so
         // and send result to server
-        if(!$(this).hasClass('active'))
-        {
+        if(!$(this).hasClass('active')) {
             $(this).addClass('active');
             var id = $(this).attr('id');
             var qid = parseId( id );
+            console.log('Getting viewer...')
             // ajax request to server
-            $.getJSON(`${$SCRIPT_ROOT}get_image`, {
+            $.get(`${$SCRIPT_ROOT}get_viewer`, {
                 // send question id
                 question_id: qid
-            }, (url) => {
-                // display image of new question using returned url
-                console.log(url);
-                $('#question-pane').html(`<img src="${url}" id="question-img"></img"`);
-            })
-        }
+            }, (html) => {
+                // insert html into question viewer
+                console.log("Success, question returned.");
+                $('#viewer').html(html);
+            });
+        };
     });
 
     // allow questions to be dragged

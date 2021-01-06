@@ -11,7 +11,7 @@
   height: calc(50vh - 140px);
 }
 
-#questionviewer {
+.tabe-pane {
   height: 100%;
   overflow-y: scroll;
 }
