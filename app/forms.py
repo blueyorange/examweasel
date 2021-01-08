@@ -13,7 +13,7 @@ class SaveForm(FlaskForm):
     saveSubmit = SubmitField('Save')
 
 class DataForm(FlaskForm):
-    exam_sitting = StringField('Exam Sitting')
+    sitting = StringField('Exam Sitting')
     paper = StringField('Exam Paper')
     question_number = IntegerField('Question')
     topic = StringField('Topic')

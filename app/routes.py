@@ -73,9 +73,13 @@ def get_viewer():
     '''Returns question viewer html when question is clicked.'''
     question_id = request.args.get('question_id',1,type=int)
     q = Question.query.get(question_id)
+    # pass q to form for defaulyt values
+    form = DataForm(obj=q)
     question_urls = [item.path for item in q.images.filter_by(resource_type='qp').all()]
     ms_urls = [item.path for item in q.images.filter_by(resource_type='ms').all()]
-    return render_template('viewer.html', q=q,question_urls=question_urls,ms_urls=ms_urls, form=DataForm())
+    form.exam_sitting = q.sitting
+    print(q.sitting)
+    return render_template('viewer.html', q=q,question_urls=question_urls,ms_urls=ms_urls, form=form)
 
 @app.route('/get_file_list')
 def get_file_list():
