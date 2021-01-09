@@ -50,7 +50,7 @@ $(document).ready(function()
             data = data + '&ids=' + this.question_array + '&file_id=' + this.id;
             console.log(`Sending: ${data}`);
             var $filename = this.$filename;
-            $.post('/index', data, function(data) {
+            $.post(`${$SCRIPT_ROOT}index`, data, function(data) {
                 console.log(data);
                 $filename.html(data['filename']);
                 this.id = data['file_id'];

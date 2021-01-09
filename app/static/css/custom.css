@@ -1,8 +1,16 @@
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
 .qpanelbody {
   overflow-y: scroll;
   padding: 0px;
 }
-
+.qpanel {
+  height: calc(100vh - 135px);
+}
 .fill-height {
   height: 100vh;
 }
@@ -11,8 +19,7 @@
   height: calc(50vh - 140px);
 }
 
-.tabe-pane {
-  height: 100%;
+.tab-content {
   overflow-y: scroll;
 }
 
