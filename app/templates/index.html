@@ -21,7 +21,6 @@
         <li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-out"></a></li>
       </ul>
   </nav>
-</div>
 {% endblock %}
 
 {% block app_content %}
@@ -97,9 +96,9 @@
     </div>
   </div>
   <div class="container-fluid fill-height">
-  <div class="row">
+  <div class="row fill-height">
     <!------------LEFT COLUMN--------------------->
-    <div class="col-sm-4">
+    <div class="col-sm-4 fill-height">
       <!-----------QUESTION PANEL----------------->
       <div class="panel panel-primary">
         <div class="panel-heading">
@@ -122,7 +121,7 @@
     <div id="initial_position">
       <!--------SPACE FOR INITIAL DOCUMENT PANEL-->
       <!-----------DOCUMENT PANEL----------------->
-      <div id="panel-template" class="panel panel-primary">
+      <div id="panel-template" class="panel panel-primary fill-height">
         <div class="panel-heading">
           <span class="filename">{{ filename }}</span>
           <span class="menu-bar">
@@ -140,13 +139,13 @@
     </div>
     </div>
     <!-----------RIGHT COLUMN------------------------>
-    <div class="col-sm-8">
-    <!-----------QUESTION VIEW PANEL----------------->
+    <div class="col-sm-8 fill-height">
+    <!-----------CONTENT PANE----------------->
     <div class="panel panel-primary qpanel">
       <div class="panel-heading">
         Question Viewer
       </div>
-      <div class="panel-body qpanelbody" id="viewer">
+      <div class="panel-body" id="viewer">
         Select question to view.
       </div>
     </div>
