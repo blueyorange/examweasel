@@ -9,7 +9,7 @@ os.chdir(root)
 
 @app.shell_context_processor
 def make_shell_context():
-    return {'db': db, 'User': User,'Question' : Question,'File': File, 'sync': sync_questions, 'flush': flush}
+    return {'db': db, 'User': User,'Question' : Question,'File': File, 'sync': sync_questions, 'flush': flush, 'Image' : Image}
 
 def sync_questions():
     log = open('log.txt','w')

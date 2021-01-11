@@ -5,25 +5,23 @@ html, body {
 }
 
 .qpanelbody {
-  overflow-y: scroll;
   padding: 0px;
 }
-
-.qpanel {
+.content-panel {
   height: calc(100vh - 135px);
 }
-
 .fill-height {
-  height: 100%;
+  height: 100vh;
 }
 
 .questionlist {
+  overflow-y: auto;
   height: calc(50vh - 140px);
 }
 
 .tab-content {
-  overflow-y: scroll;
-  height: calc(100vh - 240px);
+  height: calc(100% - 100px);
+  overflow-y: auto;
 }
 
 .list-group-item.active {

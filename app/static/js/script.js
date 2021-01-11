@@ -9,6 +9,7 @@ $(document).ready(function()
             this.id = null;
             this.$filename = $panel.find( $('span.filename') );
             this.$filename.text(this.name);
+            this.$downloadButton = $panel.find( $('a.downloadButton') );
             this.$list = $panel.find( $('ul.questionlist') );
             this.$list.droppable( {
                 // question can be dropped into document
@@ -30,6 +31,8 @@ $(document).ready(function()
             });
             // Allow user selected questions to be sortable (drag to change order)
             this.$list.sortable({});
+            // Launch download when button is clicked
+            this.$downloadButton.click( (e) => this.download(e) );
         }
 
         update() {
@@ -136,6 +139,14 @@ $(document).ready(function()
 
         clear() {
             this.question_array.forEach( (item) => this.remove(item) )
+        }
+
+        download(e) {
+            // Save file when download button is clicked
+            this.saveToServer();
+            $.get( `${$SCRIPT_ROOT}download`, {
+                file_id: this.id
+            });
         }
     }
 
@@ -286,7 +297,6 @@ $(document).ready(function()
             }
         })
     });
-    
     
     function parseId( id ) {
         // takes full string id and returns parsed integer id after '_'

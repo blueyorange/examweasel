@@ -75,11 +75,14 @@ def get_viewer():
     q = Question.query.get(question_id)
     # pass q to form for defaulyt values
     form = DataForm(obj=q)
-    question_urls = [item.path for item in q.images.filter_by(resource_type='qp').all()]
-    ms_urls = [item.path for item in q.images.filter_by(resource_type='ms').all()]
+    question_urls = get_image_list(q,'q')
+    ms_urls = get_image_list(q,'ms')
     form.exam_sitting = q.sitting
     print(q.sitting)
     return render_template('viewer.html', q=q,question_urls=question_urls,ms_urls=ms_urls, form=form)
+
+def get_image_list(q, res_type):
+    list_urls = [item.path for item in q.images.filter_by(resource_type=res_type).all()]
 
 @app.route('/get_file_list')
 def get_file_list():
@@ -94,3 +97,19 @@ def load_file():
     f = File.query.filter_by(id=file_id).first()
     print("Request for file " + str(f))
     return jsonify(filename=f.filename, question_list=f.question_list)
+
+    @app.route('/download')
+    def download():
+        '''Retrieves an array of question ids and returns a word file for download'''
+        file_id = request.args.get('file_id')
+        f = File.query.get(file_id)
+        qids = f.question_list
+        url_list = []
+        for qid in qids:
+            res_types = ['q','ms']
+            quest_dict = {}
+            q = Question.get(qid)
+            for resource_type in resource_types.keys():
+                img_list = get_image_list(q,resource_type)
+                quest_dict{resource_type, img_list}
+            url_list.append(quest_dict)
