@@ -1,11 +1,6 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
-  <ul class="nav nav-tabs">
-    <li class="active"><a href="#question-pane" data-toggle="tab">Question</a></li>
-    <li><a href="#ms-pane" data-toggle="tab">Mark Scheme</a></li>
-    <li><a href="#data-pane" data-toggle="tab">Data</a></li>
-  </ul>
-  <div class="tab-content">
+
     <div id="question-pane" class="tab-pane active">
       {% if question_urls %}
         {% for url in question_urls %}
@@ -25,4 +20,3 @@
         {{ wtf.quick_form(form) }}
       {% endif %}
     </div>
-  </div>
