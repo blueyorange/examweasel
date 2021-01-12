@@ -47,12 +47,12 @@ img {
   cursor: pointer;
 }
 
-a:hover{
-  color: red;
+a {
+  color: white;
 }
 
-.saveButton {
-  color: white;
+a:hover{
+  color: red;
 }
 
 .menu-bar {
