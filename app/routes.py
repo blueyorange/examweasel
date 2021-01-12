@@ -113,4 +113,6 @@ def download():
             quest_dict[resource_type] = img_list
         url_list.append(quest_dict)
     filename = export.word(url_list)
-    return send_from_directory(current_app.config('DOWNLOAD_FOLDER'),filename)
+    print(filename)
+    print(current_app.config['DOWNLOAD_FOLDER'])
+    return send_from_directory(current_app.config['DOWNLOAD_FOLDER'],filename)

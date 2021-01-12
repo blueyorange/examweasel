@@ -31,13 +31,8 @@ $(document).ready(function()
             });
             // Allow user selected questions to be sortable (drag to change order)
             this.$list.sortable({});
-<<<<<<< HEAD
             // Launch download when button is clicked
             this.$downloadButton.click( (e) => this.download(e) );
-=======
-            // Activate download button
-            $('a.downloadButton').click( (e) => this.download(e) );
->>>>>>> tmp
         }
 
         update() {
@@ -148,15 +143,9 @@ $(document).ready(function()
 
         download(e) {
             // Save file when download button is clicked
-<<<<<<< HEAD
-            this.saveToServer();
-            $.get( `${$SCRIPT_ROOT}download`, {
-                file_id: this.id
-=======
-            console.log(this.question_array)
+            this.update()
             $.get( `${$SCRIPT_ROOT}download`, {
                 qids: this.question_array
->>>>>>> tmp
             });
         }
     }
